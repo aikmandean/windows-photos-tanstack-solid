@@ -1,6 +1,6 @@
 # SQLite Photo Explorer for Windows 10/11 Photos App
   
-### Setup
+## Setup
 #### 1. Dependencies
 NPM install the dependencies in the project directory.
 ```
@@ -37,3 +37,19 @@ Open a final terminal from inside `./app`, then run,
 ```
 npx vite --port 3000
 ```
+  
+## Packages Used
+#### 1. Prisma
+The SQLite DB the Windows Photos maintains is highly normalized, 
+it's not fun to query. Prisma handles the SQL.
+  
+#### 2. TanStack Table
+Table adds all the filtering, sorting, nested grouping features 
+available in the app.
+
+#### 3. TanStack Virtual
+Virtual allows 10s of 1000s of rows to be loaded in app. 
+All the rows can be filtered against, aggregated, but not 
+displayed at once. Instead, only a "screen-full" of rows 
+are truly displayed. Uses infinite scrolling similar to social apps.
+  
