@@ -41,6 +41,17 @@ npx vite --port 3000
 Open your browser to `localhost:8080` to use the app, or 
 `localhost:8080/swagger` to see all the APIs.
   
+## Features
+### Object recognition
+<img src="https://i.imgur.com/oMNMtM5.png" />
+  
+### Full Location
+<img src="https://i.imgur.com/WODoO0T.png" />
+  
+### Camera Make/Model
+<img src="https://i.imgur.com/2R24CPL.png" />
+  
+
 ## Packages Used
 #### 1. Prisma
 The SQLite DB the Windows Photos maintains is highly normalized, 
