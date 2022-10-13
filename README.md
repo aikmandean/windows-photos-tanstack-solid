@@ -53,3 +53,9 @@ All the rows can be filtered against, aggregated, but not
 displayed at once. Instead, only a "screen-full" of rows 
 are truly displayed. Uses infinite scrolling similar to social apps.
   
+#### 4. Others
++ SolidJS - Frontend framework
++ Fastify - Backend server
++ Swagger - API discovery
++ Http Server - Serves images
++ ST - Runtime type definitions
