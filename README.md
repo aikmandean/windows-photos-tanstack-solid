@@ -38,6 +38,9 @@ Open a final terminal from inside `./app`, then run,
 npx vite --port 3000
 ```
   
+Open your browser to `localhost:8080` to use the app, or 
+`localhost:8080/swagger` to see all the APIs.
+  
 ## Packages Used
 #### 1. Prisma
 The SQLite DB the Windows Photos maintains is highly normalized, 
