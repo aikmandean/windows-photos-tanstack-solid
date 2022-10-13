@@ -1,0 +1,25 @@
+{
+  "name": "my-prisma-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prisma": "^4.4.0"
+  },
+  "dependencies": {
+    "@hwyblvd/cli": "^1.0.0",
+    "@hwyblvd/proxy": "^2.0.0",
+    "@hwyblvd/server": "^2.0.0",
+    "@hwyblvd/st": "^2.0.0",
+    "@hwyblvd/swagger": "^2.0.0",
+    "@prisma/client": "^4.4.0",
+    "app": "file:app"
+  }
+}

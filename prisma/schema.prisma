@@ -1,0 +1,1549 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../data/MediaDb.v1.sqlite" // env("DATABASE_URL")
+}
+
+model Album {
+  Album_Id                          Int                   @id @default(autoincrement())
+  Album_Name                        String?
+  Album_Type                        Int
+  Album_State                       Int
+  Album_QueryType                   Int
+  Album_QueryBoundsType             Int
+  Album_Query                       String?
+  Album_DateCreated                 Int
+  Album_DateUpdated                 Int?
+  Album_DateUserModified            Int?
+  Album_DateViewed                  Int?
+  Album_DateShared                  Int?
+  Album_Count                       Int
+  Album_CoverItemId                 Int?
+  Album_CoverBoundsLeft             Float?
+  Album_CoverBoundsTop              Float?
+  Album_CoverBoundsRight            Float?
+  Album_CoverBoundsBottom           Float?
+  Album_Visibility                  Int
+  Album_EventStartDate              Int?
+  Album_EventEndDate                Int?
+  Album_SummaryStartDate            Int?
+  Album_SummaryEndDate              Int?
+  Album_Source                      Int?
+  Album_SourceId                    Int?
+  Album_PublishState                Int?
+  Album_PendingTelemetryUploadState Int?                  @default(0)
+  Album_SentTelemetryUploadState    Int?                  @default(0)
+  Album_ETag                        String?
+  Album_CreationType                Int?                  @default(0)
+  Album_Order                       Int?                  @default(0)
+  Source                            Source?               @relation(fields: [Album_SourceId], references: [Source_Id], onDelete: Cascade, onUpdate: NoAction)
+  Item                              Item?                 @relation(fields: [Album_CoverItemId], references: [Item_Id], onUpdate: NoAction)
+  AlbumItemLink                     AlbumItemLink[]
+  CloudAlbum                        CloudAlbum[]
+  ExcludedAlbum                     ExcludedAlbum[]
+  PendingUploadItem                 PendingUploadItem[]   @ignore
+  Project                           Project?
+  RemoteAlbum                       RemoteAlbum?
+  UserActionAlbumView               UserActionAlbumView[]
+  UserActionSlideshow               UserActionSlideshow[]
+
+  @@index([Album_Name], map: "Album_Name")
+  @@index([Album_Order], map: "Album_Order")
+  @@index([Album_State], map: "Album_State")
+  @@index([Album_SourceId], map: "Album_SourceId")
+  @@index([Album_CoverItemId], map: "Album_CoverItemId")
+}
+
+model AlbumItemLink {
+  AlbumItemLink_AlbumId           Int
+  AlbumItemLink_ItemId            Int
+  AlbumItemLink_Order             Int?
+  AlbumItemLink_ItemPhotosCloudId String?
+  Item                            Item    @relation(fields: [AlbumItemLink_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+  Album                           Album   @relation(fields: [AlbumItemLink_AlbumId], references: [Album_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([AlbumItemLink_AlbumId, AlbumItemLink_ItemId], map: "AlbumItemLink_AlbumIdItemId")
+  @@index([AlbumItemLink_ItemId, AlbumItemLink_AlbumId], map: "AlbumItemLink_ItemIdAlbumId")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model AlbumNameFts {
+  Album_Name Unsupported("")?
+
+  @@ignore
+}
+
+model AlbumNameFts_docsize {
+  docid Int    @id @default(autoincrement())
+  size  Bytes?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model AlbumNameFts_segdir {
+  level            Int
+  idx              Int
+  start_block      Int?
+  leaves_end_block Int?
+  end_block        Int?
+  root             Bytes?
+
+  @@id([level, idx])
+  @@ignore
+}
+
+model AlbumNameFts_segments {
+  blockid Int    @id @default(autoincrement())
+  block   Bytes?
+}
+
+model AlbumNameFts_stat {
+  id    Int    @id @default(autoincrement())
+  value Bytes?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model AppGlobalState {
+  AppGlobalState_DeferredUpgradeVersion                 Int?
+  AppGlobalState_AnalysisVersion                        String?
+  AppGlobalState_DateLastLocalReconciled                Int?
+  AppGlobalState_CountLastReconciliationQueryResults    Int?
+  AppGlobalState_DateLastAlbumsMaintenance              Int?
+  AppGlobalState_DateLastTagAlbumsMaintenance           Int?
+  AppGlobalState_DateLastPetAlbumsMaintenance           Int?
+  AppGlobalState_DateLastWeddingAlbumsMaintenance       Int?
+  AppGlobalState_LastDateUsedInWeddingAlbumsMaintenance Int?
+  AppGlobalState_DateLastSeasonalAlbumsMaintenance      Int?
+  AppGlobalState_DateLastSmileAlbumsMaintenance         Int?
+  AppGlobalState_DateLastCountryTripAlbumsMaintenance   Int?
+  AppGlobalState_DateLastItemDeleted                    Int?
+  AppGlobalState_DateLastCacheCleaned                   Int?
+  AppGlobalState_OneDriveDeltaSyncToken                 String?
+  AppGlobalState_OneDriveFullSyncCompleted              Int?
+  AppGlobalState_OneDriveAlbumDeltaSyncToken            String?
+  AppGlobalState_OneDriveKnownFoldersNeedUpgrade        Int?
+  AppGlobalState_OneDriveItemsResyncing                 Int?    @default(0)
+  AppGlobalState_OneDriveAlbumsResyncing                Int?    @default(0)
+  AppGlobalState_TruncateWALFilePending                 Int?
+  AppGlobalState_RichMediaGrovelVersion                 Int?    @default(0)
+  AppGlobalState_CurrentAutoEnhanceEnabledState         Int?
+  AppGlobalState_RunDedupWork                           Int     @default(0)
+  AppGlobalState_OneDriveIdentifyPicturesScope          Int?
+  AppGlobalState_CachedLocalCollectionSize              Int?    @default(0)
+  AppGlobalState_NewAlbumsBadgeCount                    Int?    @default(0)
+  AppGlobalState_ImportBadgeDisplayState                Int?    @default(0)
+  AppGlobalState_DateLastLocationLookupReady            Int?    @default(0)
+  AppGlobalState_DateLastDbAnalyze                      Int?
+  AppGlobalState_DateLastDbVacuum                       Int?
+  AppGlobalState_XboxLiveItemsResyncing                 Int?    @default(0)
+  AppGlobalState_FaceRecognitionConsentDate             Int?    @default(0)
+  AppGlobalState_ExistingItemsSyncStarted               Int?    @default(1)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model AppTelemetryState {
+  AppTelemetryState_EventName     String?
+  AppTelemetryState_EventFireTime Int?
+
+  @@ignore
+}
+
+model ApplicationName {
+  ApplicationName_Id   Int     @id @default(autoincrement())
+  ApplicationName_Text String?
+  Item                 Item[]
+
+  @@index([ApplicationName_Text], map: "ApplicationName_Text")
+}
+
+model Audio {
+  Audio_Id                Int    @id @default(autoincrement())
+  Audio_Url               String @unique(map: "Audio_Url")
+  Audio_SampleRate        Int
+  Audio_ChannelCount      Int
+  Audio_IntegratedLUFS    Float
+  Audio_WindowInfos       Bytes
+  Audio_DurationPerWindow Int
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model BackgroundTaskTelemetry {
+  BackgroundTaskTelemetry_Id              Int
+  BackgroundTaskTelemetry_State           Int
+  BackgroundTaskTelemetry_Reason          Int
+  BackgroundTaskTelemetry_Count           Int
+  BackgroundTaskTelemetry_TotalTime       Int?   @default(0)
+  BackgroundTaskTelemetry_MinTime         Int?   @default(0)
+  BackgroundTaskTelemetry_MaxTime         Int?   @default(0)
+  BackgroundTaskTelemetry_CorrelationGuid String
+
+  @@ignore
+}
+
+model Cache {
+  Cache_Id                  Int     @id @default(autoincrement())
+  Cache_ItemId              Int?    @unique(map: "sqlite_autoindex_Cache_1")
+  Cache_Filename            String?
+  Cache_DateAccessed        Int?
+  Cache_ModificationVersion Int?
+  Item                      Item?   @relation(fields: [Cache_ItemId], references: [Item_Id], onUpdate: NoAction)
+
+  @@index([Cache_ItemId], map: "Cache_ItemId")
+  @@index([Cache_DateAccessed], map: "Cache_DateAccessed")
+  @@index([Cache_Filename], map: "Cache_Filename")
+}
+
+model CameraManufacturer {
+  CameraManufacturer_Id   Int     @id @default(autoincrement())
+  CameraManufacturer_Text String?
+  Item                    Item[]
+
+  @@index([CameraManufacturer_Text], map: "CameraManufacturer_Text")
+}
+
+model CameraModel {
+  CameraModel_Id   Int     @id @default(autoincrement())
+  CameraModel_Text String?
+  Item             Item[]
+
+  @@index([CameraModel_Text], map: "CameraModel_Text")
+}
+
+model CloudAlbum {
+  CloudAlbum_Id                     Int                   @id @default(autoincrement())
+  CloudAlbum_AlbumId                Int
+  CloudAlbum_CloudId                String?
+  CloudAlbum_CloudAlbumDefinitionId Int?
+  CloudAlbumDefinition              CloudAlbumDefinition? @relation(fields: [CloudAlbum_CloudAlbumDefinitionId], references: [CloudAlbumDefinition_Id], onDelete: Cascade, onUpdate: NoAction)
+  Album                             Album                 @relation(fields: [CloudAlbum_AlbumId], references: [Album_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([CloudAlbum_CloudAlbumDefinitionId, CloudAlbum_AlbumId], map: "CloudAlbum_CloudAlbumDefinitionIdAlbumId")
+  @@index([CloudAlbum_AlbumId], map: "CloudAlbum_AlbumId")
+  @@index([CloudAlbum_CloudId], map: "CloudAlbum_CloudId")
+}
+
+model CloudAlbumDefinition {
+  CloudAlbumDefinition_Id                        Int          @id @default(autoincrement())
+  CloudAlbumDefinition_CloudId                   String?      @unique(map: "sqlite_autoindex_CloudAlbumDefinition_1")
+  CloudAlbumDefinition_CloudQuery                String?
+  CloudAlbumDefinition_CloudFriendlyName         String?
+  CloudAlbumDefinition_DateLastAlbumsMaintenance Int?         @default(0)
+  CloudAlbumDefinition_QueryType                 Int?
+  CloudAlbum                                     CloudAlbum[]
+
+  @@index([CloudAlbumDefinition_CloudId], map: "CloudAlbumDefinition_CloudId")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model ConceptTagSuppressedTagList {
+  ConceptTagSuppressedTagList_TagResourceId Int?
+
+  @@ignore
+}
+
+model DbRecoveryTaskState {
+  DbRecoveryTaskState_Id           Int     @id @default(autoincrement())
+  DbRecoveryTaskState_TaskName     String
+  DbRecoveryTaskState_LastRun      Int
+  DbRecoveryTaskState_StatePayload String?
+}
+
+model Event {
+  Event_Id        Int    @id @default(autoincrement())
+  Event_StartDate Int?   @unique(map: "Event_StartDate")
+  Event_EndDate   Int?
+  Event_Size      Int?
+  Item            Item[]
+}
+
+model ExcludedAlbum {
+  ExcludedAlbum_Id             Int   @id @default(autoincrement())
+  ExcludedAlbum_AlbumId        Int
+  ExcludedAlbum_ExcludedForUse Int
+  ExcludedAlbum_ExcludedDate   Int
+  Album                        Album @relation(fields: [ExcludedAlbum_AlbumId], references: [Album_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([ExcludedAlbum_ExcludedForUse], map: "ExcludedAlbum_ExcludedForUse")
+  @@index([ExcludedAlbum_AlbumId], map: "ExcludedAlbum_AlbumId")
+}
+
+model ExcludedFace {
+  ExcludedFace_Id             Int         @id @default(autoincrement())
+  ExcludedFace_FaceClusterId  Int
+  ExcludedFace_FaceId         Int
+  ExcludedFace_ExcludedForUse Int
+  ExcludedFace_ExcludedDate   Int
+  Face                        Face        @relation(fields: [ExcludedFace_FaceId], references: [Face_Id], onDelete: Cascade, onUpdate: NoAction)
+  FaceCluster                 FaceCluster @relation(fields: [ExcludedFace_FaceClusterId], references: [FaceCluster_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([ExcludedFace_FaceId], map: "ExcludedFace_FaceId")
+  @@index([ExcludedFace_FaceClusterId], map: "ExcludedFace_FaceClusterId")
+}
+
+model ExcludedImport {
+  ExcludedImport_Id             Int @id @default(autoincrement())
+  ExcludedImport_ImportId       Int
+  ExcludedImport_ExcludedForUse Int
+  ExcludedImport_ExcludedDate   Int
+
+  @@index([ExcludedImport_ExcludedForUse], map: "ExcludedImport_ExcludedForUse")
+}
+
+model ExcludedItemTag {
+  ExcludedItemTag_Id                    Int  @id @default(autoincrement())
+  ExcludedItemTag_ItemId                Int
+  ExcludedItemTag_TagId                 Int
+  ExcludedItemTag_ExcludedForUse        Int
+  ExcludedItemTag_ExcludedDate          Int
+  ExcludedItemTag_ConceptModelVersion   Int?
+  ExcludedItemTag_UploadState           Int?
+  ExcludedItemTag_UploadAttempts        Int?
+  ExcludedItemTag_UploadDateLastAttempt Int?
+  Tag                                   Tag  @relation(fields: [ExcludedItemTag_TagId], references: [Tag_Id], onDelete: Cascade, onUpdate: NoAction)
+  Item                                  Item @relation(fields: [ExcludedItemTag_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([ExcludedItemTag_TagId], map: "ExcludedItemTag_TagId")
+  @@index([ExcludedItemTag_ItemId], map: "ExcludedItemTag_ItemId")
+}
+
+model ExcludedLocation {
+  ExcludedLocation_Id             Int      @id @default(autoincrement())
+  ExcludedLocation_LocationId     Int
+  ExcludedLocation_ExcludedForUse Int
+  ExcludedLocation_ExcludedDate   Int
+  Location                        Location @relation(fields: [ExcludedLocation_LocationId], references: [Location_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([ExcludedLocation_ExcludedForUse], map: "ExcludedLocation_ExcludedForUse")
+  @@index([ExcludedLocation_LocationId], map: "ExcludedLocation_LocationId")
+}
+
+model ExcludedPerson {
+  ExcludedPerson_Id             Int    @id @default(autoincrement())
+  ExcludedPerson_PersonId       Int
+  ExcludedPerson_ExcludedForUse Int
+  ExcludedPerson_ExcludedDate   Int
+  Person                        Person @relation(fields: [ExcludedPerson_PersonId], references: [Person_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([ExcludedPerson_ExcludedForUse], map: "ExcludedPerson_ExcludedForUse")
+  @@index([ExcludedPerson_PersonId], map: "ExcludedPerson_PersonId")
+}
+
+model ExcludedTag {
+  ExcludedTag_Id             Int @id @default(autoincrement())
+  ExcludedTag_TagId          Int
+  ExcludedTag_ExcludedForUse Int
+  ExcludedTag_ExcludedDate   Int
+  Tag                        Tag @relation(fields: [ExcludedTag_TagId], references: [Tag_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([ExcludedTag_ExcludedForUse], map: "ExcludedTag_ExcludedForUse")
+  @@index([ExcludedTag_TagId], map: "ExcludedTag_TagId")
+}
+
+model ExtractedText {
+  ExtractedText_Id     Int     @id @default(autoincrement())
+  ExtractedText_ItemId Int
+  ExtractedText_Text   String?
+  Item                 Item    @relation(fields: [ExtractedText_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([ExtractedText_ItemId], map: "ExtractedText_ItemId")
+}
+
+model Face {
+  Face_Id                                              Int                   @id @default(autoincrement())
+  Face_ItemId                                          Int
+  Face_FaceClusterId                                   Int?
+  Face_PersonId                                        Int?
+  Face_PersonConfirmation                              Int?
+  Face_RecoGroupId                                     Int?
+  Face_Pose                                            Int?
+  Face_QualityScore                                    Float?
+  Face_Rect_Top                                        Float?
+  Face_Rect_Left                                       Float?
+  Face_Rect_Width                                      Float?
+  Face_Rect_Height                                     Float?
+  Face_ViewRect_Top                                    Float?
+  Face_ViewRect_Left                                   Float?
+  Face_ViewRect_Width                                  Float?
+  Face_ViewRect_Height                                 Float?
+  Face_LeftEyeOpen                                     Int?
+  Face_RightEyeOpen                                    Int?
+  Face_LeftEyeCameraFocus                              Int?
+  Face_RightEyeCameraFocus                             Int?
+  Face_LeftEyeLookingAtCamera                          Int?
+  Face_RightEyeLookingAtCamera                         Int?
+  Face_LeftEyeSharpness                                Int?
+  Face_RightEyeSharpness                               Int?
+  Face_LeftEyeRedEye                                   Int?
+  Face_RightEyeRedEye                                  Int?
+  Face_MouthOpenState                                  Int?
+  Face_TeethVisibleState                               Int?
+  Face_CutOffState                                     Int?
+  Face_FaceSharpness                                   Int?
+  Face_Expression                                      Int?
+  Face_RecoExemplar                                    Bytes?
+  Face_ExemplarScore                                   Float?
+  Face_Version                                         Int?
+  Face_SmileProbability                                Float?
+  Face_IsHighQualityExemplarScore                      Int?                  @default(1)
+  Person_Face_Face_PersonIdToPerson                    Person?               @relation("Face_Face_PersonIdToPerson", fields: [Face_PersonId], references: [Person_Id], onUpdate: NoAction)
+  FaceCluster_Face_Face_FaceClusterIdToFaceCluster     FaceCluster?          @relation("Face_Face_FaceClusterIdToFaceCluster", fields: [Face_FaceClusterId], references: [FaceCluster_Id], onUpdate: NoAction)
+  Item                                                 Item                  @relation(fields: [Face_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+  ExcludedFace                                         ExcludedFace[]
+  FaceCluster_FaceToFaceCluster_FaceCluster_BestFaceId FaceCluster[]         @relation("FaceToFaceCluster_FaceCluster_BestFaceId")
+  FaceFeature                                          FaceFeature[]
+  Person_FaceToPerson_Person_SafeBestFaceId            Person[]              @relation("FaceToPerson_Person_SafeBestFaceId")
+  Person_FaceToPerson_Person_BestFaceId                Person[]              @relation("FaceToPerson_Person_BestFaceId")
+  VideoFaceOccurrence                                  VideoFaceOccurrence[]
+
+  @@index([Face_QualityScore], map: "Face_QualityScore")
+  @@index([Face_ExemplarScore], map: "Face_ExemplarScore")
+  @@index([Face_RecoGroupId], map: "Face_RecoGroupId")
+  @@index([Face_ItemId], map: "Face_ItemId")
+  @@index([Face_PersonId], map: "Face_PersonId")
+  @@index([Face_FaceClusterId], map: "Face_FaceClusterId")
+}
+
+model FaceCluster {
+  FaceCluster_Id                                Int            @id @default(autoincrement())
+  FaceCluster_PersonId                          Int?
+  FaceCluster_BestFaceId                        Int?
+  Face_FaceToFaceCluster_FaceCluster_BestFaceId Face?          @relation("FaceToFaceCluster_FaceCluster_BestFaceId", fields: [FaceCluster_BestFaceId], references: [Face_Id], onUpdate: NoAction)
+  Person                                        Person?        @relation(fields: [FaceCluster_PersonId], references: [Person_Id], onUpdate: NoAction)
+  ExcludedFace                                  ExcludedFace[]
+  Face_Face_Face_FaceClusterIdToFaceCluster     Face[]         @relation("Face_Face_FaceClusterIdToFaceCluster")
+
+  @@index([FaceCluster_BestFaceId], map: "FaceCluster_BestFaceId")
+  @@index([FaceCluster_PersonId], map: "FaceCluster_PersonId")
+}
+
+model FaceFeature {
+  FaceFeature_FaceId      Int
+  FaceFeature_FeatureType Int
+  FaceFeature_X           Float?
+  FaceFeature_Y           Float?
+  Face                    Face   @relation(fields: [FaceFeature_FaceId], references: [Face_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([FaceFeature_FaceId, FaceFeature_FeatureType])
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model FileExtensionFts {
+  Item_FileExtension Unsupported("")?
+
+  @@ignore
+}
+
+model FileExtensionFts_docsize {
+  docid Int    @id @default(autoincrement())
+  size  Bytes?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model FileExtensionFts_segdir {
+  level            Int
+  idx              Int
+  start_block      Int?
+  leaves_end_block Int?
+  end_block        Int?
+  root             Bytes?
+
+  @@id([level, idx])
+  @@ignore
+}
+
+model FileExtensionFts_segments {
+  blockid Int    @id @default(autoincrement())
+  block   Bytes?
+}
+
+model FileExtensionFts_stat {
+  id    Int    @id @default(autoincrement())
+  value Bytes?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model FilenameFts {
+  Item_Filename Unsupported("")?
+
+  @@ignore
+}
+
+model FilenameFts_docsize {
+  docid Int    @id @default(autoincrement())
+  size  Bytes?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model FilenameFts_segdir {
+  level            Int
+  idx              Int
+  start_block      Int?
+  leaves_end_block Int?
+  end_block        Int?
+  root             Bytes?
+
+  @@id([level, idx])
+  @@ignore
+}
+
+model FilenameFts_segments {
+  blockid Int    @id @default(autoincrement())
+  block   Bytes?
+}
+
+model FilenameFts_stat {
+  id    Int    @id @default(autoincrement())
+  value Bytes?
+}
+
+model Folder {
+  Folder_Id                      Int         @id @default(autoincrement())
+  Folder_ParentFolderId          Int?
+  Folder_LibraryRelationship     Int?
+  Folder_Source                  Int?
+  Folder_SourceId                Int?
+  Folder_Path                    String?     @unique(map: "Folder_Path")
+  Folder_DisplayName             String?
+  Folder_DateCreated             Int?
+  Folder_DateModified            Int?
+  Folder_KnownFolderType         Int?
+  Folder_SyncWith                Int?
+  Folder_StorageProviderFileId   String?
+  Folder_InOneDrivePicturesScope Int?
+  Folder_ItemCount               Int?
+  Source                         Source?     @relation(fields: [Folder_SourceId], references: [Source_Id], onDelete: Cascade, onUpdate: NoAction)
+  Folder                         Folder?     @relation("FolderToFolder", fields: [Folder_ParentFolderId], references: [Folder_Id], onDelete: Cascade, onUpdate: NoAction)
+  other_Folder                   Folder[]    @relation("FolderToFolder")
+  Item                           Item[]
+  RemoteItem                     RemoteItem? @ignore
+
+  @@index([Folder_DisplayName], map: "Folder_DisplayName")
+  @@index([Folder_SyncWith], map: "Folder_SyncWith")
+  @@index([Folder_StorageProviderFileId], map: "Folder_StorageProviderFileId")
+  @@index([Folder_KnownFolderType], map: "Folder_KnownFolderType")
+  @@index([Folder_SourceId], map: "Folder_SourceId")
+  @@index([Folder_Source], map: "Folder_Source")
+  @@index([Folder_ParentFolderId], map: "Folder_ParentFolderId")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model FolderNameFts {
+  Folder_DisplayName Unsupported("")?
+
+  @@ignore
+}
+
+model FolderNameFts_docsize {
+  docid Int    @id @default(autoincrement())
+  size  Bytes?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model FolderNameFts_segdir {
+  level            Int
+  idx              Int
+  start_block      Int?
+  leaves_end_block Int?
+  end_block        Int?
+  root             Bytes?
+
+  @@id([level, idx])
+  @@ignore
+}
+
+model FolderNameFts_segments {
+  blockid Int    @id @default(autoincrement())
+  block   Bytes?
+}
+
+model FolderNameFts_stat {
+  id    Int    @id @default(autoincrement())
+  value Bytes?
+}
+
+model ImageAnalysis {
+  ImageAnalysis_ItemId                    Int    @id @default(autoincrement())
+  ImageAnalysis_ReDoAnalysis              Int?
+  ImageAnalysis_AnalysisModuleVersion     Bytes?
+  ImageAnalysis_SaliencyScore             Float?
+  ImageAnalysis_RelevantFacesPercentage   Float?
+  ImageAnalysis_PortraitType              Int?
+  ImageAnalysis_AverageSaliency           Float?
+  ImageAnalysis_SaliencyNormalizer        Float?
+  ImageAnalysis_PortraitSize              Int?
+  ImageAnalysis_PhotoAspectRatio          Float?
+  ImageAnalysis_AverageEyeYLocation       Float?
+  ImageAnalysis_AverageEyeYLocationTopRow Float?
+  ImageAnalysis_AverageFaceXCoordinate    Float?
+  ImageAnalysis_FramedCenter              Float?
+  ImageAnalysis_OpenEyeFacePercentage     Float?
+  ImageAnalysis_FacingOutOfFrame          Int?
+  ImageAnalysis_HasMainObjectInBackground Int?
+  ImageAnalysis_HasSharpBackground        Int?
+  ImageAnalysis_UnsharpMaskRadius         Float?
+  ImageAnalysis_UnsharpMaskAmount         Float?
+  ImageAnalysis_UnsharpMaskThreshold      Float?
+  ImageAnalysis_RedAdjustment             Float?
+  ImageAnalysis_GreenAdjustment           Float?
+  ImageAnalysis_BlueAdjustment            Float?
+  ImageAnalysis_HighlightsAdjustment      Float?
+  ImageAnalysis_ShadowsAdjustment         Float?
+  ImageAnalysis_BlackPoint                Float?
+  ImageAnalysis_MidPoint                  Float?
+  ImageAnalysis_WhitePoint                Float?
+  ImageAnalysis_ShadowsNoiseLevel         Int?
+  ImageAnalysis_StraightenAngle           Float?
+  ImageAnalysis_ExposureQuality           Float?
+  ImageAnalysis_OverExposure              Float?
+  ImageAnalysis_UnderExposure             Float?
+  ImageAnalysis_ExposureBalance           Float?
+  ImageAnalysis_CenterExposureQuality     Float?
+  ImageAnalysis_CenterOverExposure        Float?
+  ImageAnalysis_CenterUnderExposure       Float?
+  ImageAnalysis_CenterExposureBalance     Float?
+  ImageAnalysis_SaturationQuality         Float?
+  ImageAnalysis_SaturationType            Int?
+  ImageAnalysis_HueVariety                Float?
+  ImageAnalysis_SharpnessPoint0           Float?
+  ImageAnalysis_SharpnessPoint1           Float?
+  ImageAnalysis_SharpnessPoint2           Float?
+  ImageAnalysis_SharpnessPoint3           Float?
+  ImageAnalysis_SharpnessPoint4           Float?
+  ImageAnalysis_NoiseLevel                Int?
+  ImageAnalysis_LumaNoise                 Float?
+  ImageAnalysis_ChromaNoise               Float?
+  ImageAnalysis_DetailsNoise              Float?
+  ImageAnalysis_ShadowsLumaNoise          Float?
+  ImageAnalysis_ShadowsChromaNoise        Float?
+  ImageAnalysis_ShadowsDetailsNoise       Float?
+  ImageAnalysis_Utility                   Int?
+  ImageAnalysis_HistogramBuckets          Bytes?
+  ImageAnalysis_Tone                      Bytes?
+  Item                                    Item   @relation(fields: [ImageAnalysis_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model Item {
+  Item_Id                                      Int                         @id @default(autoincrement())
+  Item_LibraryRelationship                     Int?
+  Item_Source                                  Int?
+  Item_SourceId                                Int?
+  Item_MediaType                               Int?
+  Item_DateTaken                               BigInt?
+  Item_Width                                   Int?
+  Item_Height                                  Int?
+  Item_EditState                               Int?
+  // Item_DateCreated                             Int?
+  // Item_DateModified                            Int?
+  // Item_ExclusiveDateTaken                      Int?
+  Item_SystemThumbnailCacheId                  Int?
+  Item_ParentFolderId                          Int
+  Item_FileName                                String?
+  Item_FileExtension                           String?
+  Item_FileSize                                Int?
+  Item_Latitude                                Float?
+  Item_Longitude                               Float?
+  Item_Caption                                 String?
+  Item_SimpleRating                            Int?
+  Item_Duration                                Int?
+  Item_QualityScore                            Float?
+  Item_BurstClusterNumber                      Int?                        @default(0)
+  // Item_DateModifiedAtLastBurstRun              Int?                        @default(0)
+  Item_BurstPrevItemId                         Int?
+  Item_BurstChunk                              Int?                        @default(0)
+  Item_LocationId                              Int?
+  Item_Flash                                   Int?
+  Item_AnalysisVersion                         Int?
+  Item_AnalysisLastRun                         Int?
+  // Item_DateModifiedAtLastAnalysisRun           Int?
+  Item_AnalysisErrorCode                       Int?
+  Item_AnalysisErrorCount                      Int?
+  Item_AnalysisQueueState                      Int                         @default(0)
+  Item_ApplicationNameId                       Int?
+  Item_CameraManufacturerId                    Int?
+  Item_CameraModelId                           Int?
+  Item_HasAuthor                               Int?
+  Item_HasCopyright                            Int?
+  Item_HasKeywords                             Int?
+  Item_FileWidth                               Int?
+  Item_FileHeight                              Int?
+  Item_NDEWidth                                Int?
+  Item_NDEHeight                               Int?
+  Item_HashAtLastNDEThumbnailGeneration        Int?
+  Item_EventId                                 Int?
+  Item_MetadataExtractedAsOf                   Int?
+  Item_PendingXmpExtractionMask                Int?
+  // Item_DateIngested                            Int
+  Item_DupFinderVersion                        Int?
+  Item_DateDupFinding                          Int?
+  Item_SameAs                                  Int?
+  Item_SyncWith                                Int?
+  Item_HasDup                                  Int?
+  Item_DupState                                Int?
+  Item_UserSelectedDupId                       Int?
+  Item_UserUnlink                              Int?
+  Item_MetadataHash                            String?
+  Item_PixelHash                               String?
+  Item_CameraSettingFNumber                    Float?
+  Item_CameraSettingFocalLength                Float?
+  Item_CameraSettingISOSpeed                   Int?
+  Item_CameraSettingExposureTime               Float?
+  Item_EditList                                Bytes?
+  Item_ModificationVersion                     Int?                        @default(0)
+  Item_RichMediaId                             String?
+  Item_RichMediaAppId                          String?
+  Item_RichMediaLaunchOptions                  Int?
+  Item_RichMediaSlowGrovelPending              Int?
+  Item_ThumbnailPrecacheAttempted              Int?
+  Item_PendingTelemetryUploadState             Int?                        @default(0)
+  Item_SentTelemetryUploadState                Int?                        @default(0)
+  Item_InAppRotatePending                      Int?
+  Item_StorageProviderFileId                   String?
+  Item_NDEThumbnailGenerationErrorCount        Int?
+  Item_FrameRate                               Float?
+  Item_ImportSession                           Int?
+  Item_PendingNDE                              Int?
+  Item_RichMediaFileStatus                     Int?
+  Item_UploadPendingState                      Int?                        @default(0)
+  Item_UploadAttempts                          Int?                        @default(0)
+  Item_UploadRequestTime                       Int?                        @default(0)
+  Item_LastUploadAttemptTime                   Int?                        @default(0)
+  Item_ETag                                    String?
+  Item_RewriteSupplementaryPropertiesNeeded    Int                         @default(1)
+  Item_LastEditDate                            Int?
+  Item_IsInked                                 Int?
+  Item_IsExportedMovie                         Int?
+  Item_OnlineContentAttributionString          String?
+  Event                                        Event?                      @relation(fields: [Item_EventId], references: [Event_Id], onUpdate: NoAction)
+  CameraModel                                  CameraModel?                @relation(fields: [Item_CameraModelId], references: [CameraModel_Id], onUpdate: NoAction)
+  CameraManufacturer                           CameraManufacturer?         @relation(fields: [Item_CameraManufacturerId], references: [CameraManufacturer_Id], onUpdate: NoAction)
+  ApplicationName                              ApplicationName?            @relation(fields: [Item_ApplicationNameId], references: [ApplicationName_Id], onUpdate: NoAction)
+  Location_Item_Item_LocationIdToLocation      Location?                   @relation("Item_Item_LocationIdToLocation", fields: [Item_LocationId], references: [Location_Id], onUpdate: NoAction)
+  Item                                         Item?                       @relation("ItemToItem", fields: [Item_BurstPrevItemId], references: [Item_Id], onUpdate: NoAction)
+  Folder                                       Folder                      @relation(fields: [Item_ParentFolderId], references: [Folder_Id], onDelete: Cascade, onUpdate: NoAction)
+  Source                                       Source?                     @relation(fields: [Item_SourceId], references: [Source_Id], onDelete: Cascade, onUpdate: NoAction)
+  Album                                        Album[]
+  AlbumItemLink                                AlbumItemLink[]
+  Cache                                        Cache?
+  ExcludedItemTag                              ExcludedItemTag[]
+  ExtractedText                                ExtractedText[]
+  Face                                         Face[]
+  ImageAnalysis                                ImageAnalysis?
+  other_Item                                   Item[]                      @relation("ItemToItem")
+  ItemEdit                                     ItemEdit[]                  @ignore
+  ItemEngineExemplar                           ItemEngineExemplar?
+  ItemEngineStatus                             ItemEngineStatus?
+  ItemTags                                     ItemTags[]
+  ItemVideoQuality                             ItemVideoQuality[]
+  LiveTile                                     LiveTile?
+  Location_ItemToLocation_Location_CoverItemId Location[]                  @relation("ItemToLocation_Location_CoverItemId")
+  OCRItem                                      OCRItem[]
+  PendingUploadItem                            PendingUploadItem[]         @ignore
+  RemoteItem                                   RemoteItem?                 @ignore
+  RemoteThumbnail                              RemoteThumbnail[]           @ignore
+  SalientRect                                  SalientRect[]
+  SearchAnalysisItemPriority                   SearchAnalysisItemPriority?
+  UserActionPrint                              UserActionPrint[]
+  UserActionShare                              UserActionShare[]
+  UserActionSlideshow                          UserActionSlideshow[]
+  UserActionView                               UserActionView[]
+
+  @@index([Item_FileName], map: "Item_FileName")
+  @@index([Item_BurstPrevItemId], map: "Item_BurstPrevItemId")
+  @@index([Item_RewriteSupplementaryPropertiesNeeded], map: "Item_RewriteSupplementaryPropertiesNeeded")
+  @@index([Item_AnalysisQueueState], map: "Item_AnalysisQueueState")
+  @@index([Item_MediaType], map: "Item_MediaType")
+  @@index([Item_BurstChunk], map: "Item_BurstChunk")
+  @@index([Item_BurstClusterNumber], map: "Item_BurstClusterNumber")
+  @@index([Item_LocationId], map: "Item_LocationId")
+  @@index([Item_SyncWith], map: "Item_SyncWith")
+  @@index([Item_UserSelectedDupId], map: "Item_UserSelectedDupId")
+  @@index([Item_SameAs], map: "Item_SameAs")
+  @@index([Item_EditState], map: "Item_EditState")
+  @@index([Item_DateDupFinding], map: "Item_DateDupFinding")
+  @@index([Item_StorageProviderFileId], map: "Item_StorageProviderFileId")
+  @@index([Item_RichMediaSlowGrovelPending], map: "Item_RichMediaSlowGrovelPending")
+  @@index([Item_MetadataHash], map: "Item_MetadataHash")
+  @@index([Item_FileExtension], map: "Item_FileExtension")
+  @@index([Item_SourceId], map: "Item_SourceId")
+  @@index([Item_Source], map: "Item_Source")
+  // @@index([Item_DateIngested], map: "Item_DateIngested")
+  // @@index([Item_DateCreated], map: "Item_DateCreated")
+  // @@index([Item_DateTaken], map: "Item_DateTaken")
+  @@index([Item_LibraryRelationship], map: "Item_LibraryRelationship")
+  @@index([Item_ParentFolderId, Item_FileName], map: "Item_ParentFolderIdFileName")
+}
+
+model ItemDateTaken {
+  ItemDateTaken_ItemId    Int  @id @default(autoincrement())
+  ItemDateTaken_Year      Int?
+  ItemDateTaken_Month     Int?
+  ItemDateTaken_Day       Int?
+  ItemDateTaken_DayOfWeek Int?
+
+  @@index([ItemDateTaken_DayOfWeek], map: "ItemDateTaken_DayOfWeek")
+  @@index([ItemDateTaken_Day], map: "ItemDateTaken_Day")
+  @@index([ItemDateTaken_Month], map: "ItemDateTaken_Month")
+  @@index([ItemDateTaken_Year], map: "ItemDateTaken_Year")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model ItemEdit {
+  ItemEdit_ItemId     Int
+  ItemEdit_EditTypeId Int?
+  ItemEdit_EditDate   Int?
+  Item                Item @relation(fields: [ItemEdit_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([ItemEdit_ItemId], map: "ItemEdit_ItemId")
+  @@ignore
+}
+
+model ItemEngineExemplar {
+  ItemEngineExemplar_Id       Int    @id @default(autoincrement())
+  ItemEngineExemplar_ItemId   Int    @unique(map: "ItemEngineExemplar_ItemId")
+  ItemEngineExemplar_Exemplar Bytes?
+  Item                        Item   @relation(fields: [ItemEngineExemplar_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model ItemEngineStatus {
+  ItemEngineStatus_Id                  Int     @id @default(autoincrement())
+  ItemEngineStatus_ItemId              Int     @unique(map: "ItemEngineStatus_ItemId")
+  ItemEngineStatus_Status              Int?
+  ItemEngineStatus_ErrorCode           Int?
+  ItemEngineStatus_ErrorString         String?
+  ItemEngineStatus_RetryCount          Int?
+  ItemEngineStatus_Version             String?
+  // ItemEngineStatus_LastRun             Int?
+  ItemEngineStatus_LastFrameAnalyzed   Int?
+  ItemEngineStatus_PartialVideoVersion String?
+  ItemEngineStatus_AnalysisDone        Int     @default(0)
+  Item                                 Item    @relation(fields: [ItemEngineStatus_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  // @@index([ItemEngineStatus_LastRun], map: "ItemEngineStatus_LastRun")
+}
+
+// model ItemInferredLocationExperimental {
+//   ItemInferredLocationExperimental_ItemId             Int              @id @default(autoincrement())
+//   ItemInferredLocationExperimental_InferredLocationId Unsupported("")?
+//   Location                                            Location?        @relation(fields: [ItemInferredLocationExperimental_InferredLocationId], references: [Location_Id], onUpdate: NoAction)
+// }
+
+model ItemTags {
+  ItemTags_Id         Int             @id @default(autoincrement())
+  ItemTags_ItemId     Int
+  ItemTags_TagId      Int
+  ItemTags_Confidence Float?
+  Tag                 Tag             @relation(fields: [ItemTags_TagId], references: [Tag_Id], onDelete: Cascade, onUpdate: NoAction)
+  Item                Item            @relation(fields: [ItemTags_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+  ItemVideoTags       ItemVideoTags[]
+
+  @@unique([ItemTags_ItemId, ItemTags_TagId], map: "ItemTags_ItemId_TagId")
+  @@index([ItemTags_ItemId], map: "ItemTags_ItemId")
+  @@index([ItemTags_TagId], map: "ItemTags_TagId")
+}
+
+model ItemVideoQuality {
+  ItemVideoQuality_Id           Int    @id @default(autoincrement())
+  ItemVideoQuality_ItemId       Int
+  ItemVideoQuality_Quality      Float?
+  ItemVideoQuality_QualityLevel Int?
+  ItemVideoQuality_BeginFrame   Int
+  ItemVideoQuality_EndFrame     Int
+  Item                          Item   @relation(fields: [ItemVideoQuality_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([ItemVideoQuality_ItemId], map: "ItemVideoQuality_ItemId")
+}
+
+model ItemVideoTags {
+  ItemVideoTags_Id         Int      @id @default(autoincrement())
+  ItemVideoTags_ItemTagsId Int
+  ItemVideoTags_Confidence Float?
+  ItemVideoTags_BeginFrame Int
+  ItemVideoTags_EndFrame   Int
+  ItemTags                 ItemTags @relation(fields: [ItemVideoTags_ItemTagsId], references: [ItemTags_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([ItemVideoTags_ItemTagsId], map: "ItemVideoTags_ItemTagsId")
+}
+
+model LiveTile {
+  LiveTile_ItemId Int  @id @default(autoincrement())
+  Item            Item @relation(fields: [LiveTile_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model Location {
+  Location_Id                              Int                                @id @default(autoincrement())
+  Location_Name                            String?
+  Location_LocationRegionId                Int?
+  Location_LocationDistrictId              Int?
+  Location_LocationCountryId               Int?
+  Location_ItemsCountExcDupes              Int?                               @default(0)
+  Location_CoverItemId                     Int?
+  Item_ItemToLocation_Location_CoverItemId Item?                              @relation("ItemToLocation_Location_CoverItemId", fields: [Location_CoverItemId], references: [Item_Id], onUpdate: NoAction)
+  LocationCountry                          LocationCountry?                   @relation(fields: [Location_LocationCountryId], references: [LocationCountry_Id], onUpdate: NoAction)
+  LocationDistrict                         LocationDistrict?                  @relation(fields: [Location_LocationDistrictId], references: [LocationDistrict_Id], onUpdate: NoAction)
+  LocationRegion                           LocationRegion?                    @relation(fields: [Location_LocationRegionId], references: [LocationRegion_Id], onUpdate: NoAction)
+  ExcludedLocation                         ExcludedLocation[]
+  Item_Item_Item_LocationIdToLocation      Item[]                             @relation("Item_Item_LocationIdToLocation")
+  // ItemInferredLocationExperimental         ItemInferredLocationExperimental[]
+  LocationGrid                             LocationGrid[]
+
+  @@index([Location_Name], map: "Location_Name")
+  @@index([Location_CoverItemId], map: "Location_CoverItemId")
+  @@index([Location_LocationCountryId], map: "Location_LocationCountryId")
+  @@index([Location_LocationRegionId], map: "Location_LocationRegionId")
+  @@index([Location_LocationDistrictId], map: "Location_LocationDistrictId")
+  @@index([Location_ItemsCountExcDupes], map: "Location_ItemsCountExcDupes")
+}
+
+model LocationCountry {
+  LocationCountry_Id   Int              @id @default(autoincrement())
+  LocationCountry_Name String?
+  Location             Location[]
+  LocationRegion       LocationRegion[]
+
+  @@index([LocationCountry_Name], map: "LocationCountry_Name")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model LocationCountryFts {
+  LocationCountry_Name Unsupported("")?
+
+  @@ignore
+}
+
+model LocationCountryFts_docsize {
+  docid Int    @id @default(autoincrement())
+  size  Bytes?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model LocationCountryFts_segdir {
+  level            Int
+  idx              Int
+  start_block      Int?
+  leaves_end_block Int?
+  end_block        Int?
+  root             Bytes?
+
+  @@id([level, idx])
+  @@ignore
+}
+
+model LocationCountryFts_segments {
+  blockid Int    @id @default(autoincrement())
+  block   Bytes?
+}
+
+model LocationCountryFts_stat {
+  id    Int    @id @default(autoincrement())
+  value Bytes?
+}
+
+model LocationDistrict {
+  LocationDistrict_Id               Int             @id @default(autoincrement())
+  LocationDistrict_Name             String?
+  LocationDistrict_LocationRegionId Int?
+  LocationRegion                    LocationRegion? @relation(fields: [LocationDistrict_LocationRegionId], references: [LocationRegion_Id], onUpdate: NoAction)
+  Location                          Location[]
+
+  @@index([LocationDistrict_Name], map: "LocationDistrict_Name")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model LocationDistrictFts {
+  LocationDistrict_Name Unsupported("")?
+
+  @@ignore
+}
+
+model LocationDistrictFts_docsize {
+  docid Int    @id @default(autoincrement())
+  size  Bytes?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model LocationDistrictFts_segdir {
+  level            Int
+  idx              Int
+  start_block      Int?
+  leaves_end_block Int?
+  end_block        Int?
+  root             Bytes?
+
+  @@id([level, idx])
+  @@ignore
+}
+
+model LocationDistrictFts_segments {
+  blockid Int    @id @default(autoincrement())
+  block   Bytes?
+}
+
+model LocationDistrictFts_stat {
+  id    Int    @id @default(autoincrement())
+  value Bytes?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model LocationFts {
+  Location_Name Unsupported("")?
+
+  @@ignore
+}
+
+model LocationFts_docsize {
+  docid Int    @id @default(autoincrement())
+  size  Bytes?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model LocationFts_segdir {
+  level            Int
+  idx              Int
+  start_block      Int?
+  leaves_end_block Int?
+  end_block        Int?
+  root             Bytes?
+
+  @@id([level, idx])
+  @@ignore
+}
+
+model LocationFts_segments {
+  blockid Int    @id @default(autoincrement())
+  block   Bytes?
+}
+
+model LocationFts_stat {
+  id    Int    @id @default(autoincrement())
+  value Bytes?
+}
+
+model LocationGrid {
+  LocationGrid_Id         Int       @id @default(autoincrement())
+  LocationGrid_Latitude   Float?
+  LocationGrid_Longitude  Float?
+  LocationGrid_LocationId Int?
+  LocationGrid_ErrorCount Int?
+  LocationGrid_LastRun    Int?
+  Location                Location? @relation(fields: [LocationGrid_LocationId], references: [Location_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([LocationGrid_Latitude, LocationGrid_Longitude], map: "LocationGrid_LatLong")
+}
+
+model LocationRegion {
+  LocationRegion_Id                Int                @id @default(autoincrement())
+  LocationRegion_Name              String?
+  LocationRegion_LocationCountryId Int?
+  LocationCountry                  LocationCountry?   @relation(fields: [LocationRegion_LocationCountryId], references: [LocationCountry_Id], onUpdate: NoAction)
+  Location                         Location[]
+  LocationDistrict                 LocationDistrict[]
+
+  @@index([LocationRegion_Name], map: "LocationRegion_Name")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model LocationRegionFts {
+  LocationRegion_Name Unsupported("")?
+
+  @@ignore
+}
+
+model LocationRegionFts_docsize {
+  docid Int    @id @default(autoincrement())
+  size  Bytes?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model LocationRegionFts_segdir {
+  level            Int
+  idx              Int
+  start_block      Int?
+  leaves_end_block Int?
+  end_block        Int?
+  root             Bytes?
+
+  @@id([level, idx])
+  @@ignore
+}
+
+model LocationRegionFts_segments {
+  blockid Int    @id @default(autoincrement())
+  block   Bytes?
+}
+
+model LocationRegionFts_stat {
+  id    Int    @id @default(autoincrement())
+  value Bytes?
+}
+
+model NetworkTelemetry {
+  NetworkTelemetry_Source               Int
+  NetworkTelemetry_RequestType          Int
+  NetworkTelemetry_IsBackgroundTaskHost Int
+  NetworkTelemetry_TotalCount           Int
+  NetworkTelemetry_ByteSize             Int
+
+  @@id([NetworkTelemetry_Source, NetworkTelemetry_RequestType, NetworkTelemetry_IsBackgroundTaskHost])
+}
+
+model OCRItem {
+  OCRItem_Id        Int       @id @default(autoincrement())
+  OCRItem_ItemId    Int
+  OCRItem_TextAngle Float
+  Item              Item      @relation(fields: [OCRItem_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+  OCRLine           OCRLine[]
+
+  @@index([OCRItem_ItemId], map: "OCRItem_ItemId")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model OCRItemTextViewFts {
+  OCRItemTextView_Text Unsupported("")?
+
+  @@ignore
+}
+
+model OCRItemTextViewFts_docsize {
+  docid Int    @id @default(autoincrement())
+  size  Bytes?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model OCRItemTextViewFts_segdir {
+  level            Int
+  idx              Int
+  start_block      Int?
+  leaves_end_block Int?
+  end_block        Int?
+  root             Bytes?
+
+  @@id([level, idx])
+  @@ignore
+}
+
+model OCRItemTextViewFts_segments {
+  blockid Int    @id @default(autoincrement())
+  block   Bytes?
+}
+
+model OCRItemTextViewFts_stat {
+  id    Int    @id @default(autoincrement())
+  value Bytes?
+}
+
+model OCRLine {
+  OCRLine_Id          Int       @id @default(autoincrement())
+  OCRLine_OCRItemId   Int
+  OCRLine_IndexOnItem Int
+  OCRItem             OCRItem   @relation(fields: [OCRLine_OCRItemId], references: [OCRItem_Id], onDelete: Cascade, onUpdate: NoAction)
+  OCRWord             OCRWord[]
+
+  @@index([OCRLine_OCRItemId], map: "OCRLine_OCRItemId")
+}
+
+model OCRWord {
+  OCRWord_Id          Int     @id @default(autoincrement())
+  OCRWord_OCRLineId   Int
+  OCRWord_IndexOnLine Int
+  OCRWord_Text        String
+  OCRWord_Height      Float
+  OCRWord_Width       Float
+  OCRWord_X           Float
+  OCRWord_Y           Float
+  OCRLine             OCRLine @relation(fields: [OCRWord_OCRLineId], references: [OCRLine_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([OCRWord_OCRLineId], map: "OCRWord_OCRLineId")
+  @@index([OCRWord_Text], map: "OCRWord_Text")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model OneDriveStorageAndUpsellInfo {
+  OneDriveStorageAndUpsellInfo_UserId                 String? @id
+  OneDriveStorageAndUpsellInfo_TotalSpace             Int?    @default(0)
+  OneDriveStorageAndUpsellInfo_UsedSpace              Int?    @default(0)
+  OneDriveStorageAndUpsellInfo_IsHighestPlan          Int?    @default(0)
+  OneDriveStorageAndUpsellInfo_PaidSpace              Int?    @default(0)
+  OneDriveStorageAndUpsellInfo_CountOfClickUpsellLink Int?    @default(0)
+  OneDriveStorageAndUpsellInfo_TotalSpaceForDisplay   String?
+  OneDriveStorageAndUpsellInfo_UsedSpaceForDisplay    String?
+  OneDriveStorageAndUpsellInfo_PriceForDisplay        String?
+  OneDriveStorageAndUpsellInfo_UpsellUrl              String?
+  OneDriveStorageAndUpsellInfo_UpsellState            Int?    @default(0)
+  OneDriveStorageAndUpsellInfo_LastGetQuotaTime       Int?    @default(0)
+  OneDriveStorageAndUpsellInfo_LastGetUpsellInfoTime  Int?    @default(0)
+  OneDriveStorageAndUpsellInfo_CurrentPlan            Int?    @default(0)
+  OneDriveStorageAndUpsellInfo_QuotaStatus            Int?    @default(0)
+
+  @@ignore
+}
+
+model PendingCloudAlbumDelete {
+  PendingCloudAlbumDelete_Id            Int     @id @default(autoincrement())
+  PendingCloudAlbumDelete_PhotosCloudId String?
+  PendingCloudAlbumDelete_SourceId      Int?
+  Source                                Source? @relation(fields: [PendingCloudAlbumDelete_SourceId], references: [Source_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([PendingCloudAlbumDelete_PhotosCloudId, PendingCloudAlbumDelete_SourceId], map: "PendingCloudAlbumDelete_PhotosCloudIdSourceId")
+  @@index([PendingCloudAlbumDelete_SourceId], map: "PendingCloudAlbumDelete_SourceId")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model PendingUploadItem {
+  PendingUploadItem_ItemId               Int
+  PendingUploadItem_AlbumId              Int
+  PendingUploadItem_Result               Int?
+  PendingUploadItem_ResourceId           String?
+  PendingUploadItem_SourceId             Int?
+  PendingUploadItem_Type                 Int?    @default(0)
+  PendingUploadItem_NeedsAEUpload        Int?    @default(0)
+  PendingUploadItem_ActionAfterUpload    Int?
+  PendingUploadItem_AlbumRemoteId        String?
+  PendingUploadItem_ResourceIdSourceType Int?    @default(1)
+  PendingUploadItem_UploadSessionUrl     String?
+  PendingUploadItem_ResumableUploadUrl   String?
+  Source                                 Source? @relation(fields: [PendingUploadItem_SourceId], references: [Source_Id], onDelete: Cascade, onUpdate: NoAction)
+  Album                                  Album   @relation(fields: [PendingUploadItem_AlbumId], references: [Album_Id], onDelete: Cascade, onUpdate: NoAction)
+  Item                                   Item    @relation(fields: [PendingUploadItem_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([PendingUploadItem_SourceId], map: "PendingUploadItem_SourceId")
+  @@index([PendingUploadItem_AlbumId], map: "PendingUploadItem_AlbumId")
+  @@index([PendingUploadItem_ItemId], map: "PendingUploadItem_ItemAlbum")
+  @@ignore
+}
+
+model Person {
+  Person_Id                               Int              @id @default(autoincrement())
+  Person_CID                              Int?
+  Person_BestFaceId                       Int?
+  Person_SafeBestFaceId                   Int?
+  Person_ServiceId                        Int?
+  Person_Name                             String?
+  Person_SourceAndId                      String?
+  Person_ItemCount                        Int?             @default(0)
+  Person_EmailDigest                      Bytes?
+  Person_RepresentativeThumbStream        Bytes?
+  Person_Rank                             Int?
+  Person_RecalcBestFace                   Int?             @default(1)
+  Person_RecalcRank                       Int?             @default(1)
+  Face_FaceToPerson_Person_SafeBestFaceId Face?            @relation("FaceToPerson_Person_SafeBestFaceId", fields: [Person_SafeBestFaceId], references: [Face_Id], onUpdate: NoAction)
+  Face_FaceToPerson_Person_BestFaceId     Face?            @relation("FaceToPerson_Person_BestFaceId", fields: [Person_BestFaceId], references: [Face_Id], onUpdate: NoAction)
+  ExcludedPerson                          ExcludedPerson[]
+  Face_Face_Face_PersonIdToPerson         Face[]           @relation("Face_Face_PersonIdToPerson")
+  FaceCluster                             FaceCluster[]
+
+  @@index([Person_Name], map: "Person_Name")
+  @@index([Person_SafeBestFaceId], map: "Person_SafeBestFaceId")
+  @@index([Person_RecalcRank], map: "Person_RecalcRank")
+  @@index([Person_RecalcBestFace], map: "Person_RecalcBestFace")
+  @@index([Person_Rank], map: "Person_Rank")
+  @@index([Person_BestFaceId], map: "Person_BestFaceId")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model PersonFts {
+  Person_Name Unsupported("")?
+
+  @@ignore
+}
+
+model PersonFts_docsize {
+  docid Int    @id @default(autoincrement())
+  size  Bytes?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model PersonFts_segdir {
+  level            Int
+  idx              Int
+  start_block      Int?
+  leaves_end_block Int?
+  end_block        Int?
+  root             Bytes?
+
+  @@id([level, idx])
+  @@ignore
+}
+
+model PersonFts_segments {
+  blockid Int    @id @default(autoincrement())
+  block   Bytes?
+}
+
+model PersonFts_stat {
+  id    Int    @id @default(autoincrement())
+  value Bytes?
+}
+
+model PinnedSearch {
+  PinnedSearch_Id         Int     @id @default(autoincrement())
+  PinnedSearch_PinnedDate Int
+  PinnedSearch_SearchText String?
+
+  @@index([PinnedSearch_PinnedDate], map: "PinnedSearch_PinnedDate")
+}
+
+model Project {
+  Project_Id                       Int             @id @default(autoincrement())
+  Project_AlbumId                  Int?            @unique(map: "Project_AlbumId")
+  Project_Guid                     String          @unique(map: "Project_Guid")
+  Project_Name                     String?
+  Project_RpmState                 String?
+  Project_AgmState                 String?
+  Project_DateCreated              Int
+  Project_Duration                 Int?
+  Project_StoryBuilderProjectState Bytes?
+  Album                            Album?          @relation(fields: [Project_AlbumId], references: [Album_Id], onDelete: Cascade, onUpdate: NoAction)
+  RemoteProject                    RemoteProject[]
+}
+
+model RemoteAlbum {
+  RemoteAlbum_AlbumId           Int     @id @default(autoincrement())
+  RemoteAlbum_RemoteId          String?
+  RemoteAlbum_PresentAtSync     Int?    @default(0)
+  RemoteAlbum_GenericViewUrl    String?
+  RemoteAlbum_CoverDuringUpload String?
+  RemoteAlbum_AlbumType         Int?    @default(0)
+  RemoteAlbum_PhotosCloudId     String?
+  RemoteAlbum_ETag              String?
+  Album                         Album   @relation(fields: [RemoteAlbum_AlbumId], references: [Album_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([RemoteAlbum_PhotosCloudId], map: "RemoteAlbum_PhotosCloudId")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model RemoteItem {
+  RemoteItem_RemoteId       String?
+  RemoteItem_RemoteParentId String?
+  RemoteItem_ItemId         Int?    @unique(map: "RemoteItem_ItemId")
+  RemoteItem_FolderId       Int?    @unique(map: "RemoteItem_FolderId")
+  RemoteItem_DownloadUrl    String?
+  RemoteItem_PresentAtSync  Int?    @default(0)
+  RemoteItem_PhotosCloudId  String?
+  Folder                    Folder? @relation(fields: [RemoteItem_FolderId], references: [Folder_Id], onDelete: Cascade, onUpdate: NoAction)
+  Item                      Item?   @relation(fields: [RemoteItem_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([RemoteItem_RemoteId], map: "RemoteItem_RemoteId")
+  @@ignore
+}
+
+model RemoteProject {
+  RemoteProject_Id                Int     @id @default(autoincrement())
+  RemoteProject_ProjectGuid       String
+  RemoteProject_PhotosCloudId     String?
+  RemoteProject_PublishState      Int
+  RemoteProject_DateLastSynced    Int?
+  RemoteProject_ETag              String?
+  RemoteProject_MigratedFromCloud Int     @default(0)
+  Project                         Project @relation(fields: [RemoteProject_ProjectGuid], references: [Project_Guid], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([RemoteProject_PhotosCloudId], map: "RemoteProject_PhotosCloudId")
+  @@index([RemoteProject_ProjectGuid], map: "RemoteProject_ProjectGuid")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model RemoteThumbnail {
+  RemoteThumbnail_ItemId Int
+  RemoteThumbnail_Width  Int?
+  RemoteThumbnail_Height Int?
+  RemoteThumbnail_Url    String?
+  Item                   Item    @relation(fields: [RemoteThumbnail_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([RemoteThumbnail_ItemId], map: "RemoteThumbnail_ItemId")
+  @@ignore
+}
+
+model SalientRect {
+  SalientRect_Id              Int    @id @default(autoincrement())
+  SalientRect_ItemId          Int
+  SalientRect_Rect_Left       Float?
+  SalientRect_Rect_Top        Float?
+  SalientRect_Rect_Width      Float?
+  SalientRect_Rect_Height     Float?
+  SalientRect_Sharpness       Float?
+  SalientRect_ContainsFaces   Int?
+  SalientRect_IsFaceUnionRect Int?
+  Item                        Item   @relation(fields: [SalientRect_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([SalientRect_ItemId], map: "SalientRect_ItemId")
+}
+
+model SearchAnalysisItemPriority {
+  SearchAnalysisItemPriority_Id       Int  @id @default(autoincrement())
+  SearchAnalysisItemPriority_ItemId   Int  @unique(map: "SearchAnalysisItemPriority_ItemId")
+  SearchAnalysisItemPriority_Priority Int  @default(0)
+  Item                                Item @relation(fields: [SearchAnalysisItemPriority_ItemId], references: [Item_Id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model Source {
+  Source_Id                      Int                       @id @default(autoincrement())
+  Source_Type                    Int?
+  Source_UserId                  String?
+  Source_UserName                String?
+  Source_Status                  Int?
+  Source_UserEnabled             Int?
+  Source_PhotosCloudUserId       String?
+  Source_DeltaSyncToken          String?
+  Source_FullSyncCompleted       Int?
+  Source_ItemsResyncing          Int?                      @default(0)
+  Source_SignOutTime             Int?                      @default(0)
+  Source_ODSyncThrottleStartTime Int?
+  Album                          Album[]
+  Folder                         Folder[]
+  Item                           Item[]
+  PendingCloudAlbumDelete        PendingCloudAlbumDelete[]
+  PendingUploadItem              PendingUploadItem[]       @ignore
+}
+
+model Tag {
+  Tag_Id          Int               @id @default(autoincrement())
+  Tag_ResourceId  Int?
+  Tag_CreatedDate BigInt?
+  ExcludedItemTag ExcludedItemTag[]
+  ExcludedTag     ExcludedTag[]
+  ItemTags        ItemTags[]
+
+  @@index([Tag_ResourceId], map: "Tag_ResourceId")
+}
+
+model TagVariant {
+  TagVariant_Id            Int     @id @default(autoincrement())
+  TagVariant_TagResourceId Int?
+  TagVariant_Text          String?
+  TagVariant_IsPrimary     Int?
+
+  @@index([TagVariant_Text], map: "TagVariant_Text")
+  @@index([TagVariant_TagResourceId], map: "TagVariant_TagResourceId")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model TagVariantFts {
+  TagVariant_Text Unsupported("")?
+
+  @@ignore
+}
+
+model TagVariantFts_docsize {
+  docid Int    @id @default(autoincrement())
+  size  Bytes?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model TagVariantFts_segdir {
+  level            Int
+  idx              Int
+  start_block      Int?
+  leaves_end_block Int?
+  end_block        Int?
+  root             Bytes?
+
+  @@id([level, idx])
+  @@ignore
+}
+
+model TagVariantFts_segments {
+  blockid Int    @id @default(autoincrement())
+  block   Bytes?
+}
+
+model TagVariantFts_stat {
+  id    Int    @id @default(autoincrement())
+  value Bytes?
+}
+
+model UserActionAlbumView {
+  UserActionAlbumView_Id           Int    @id @default(autoincrement())
+  UserActionAlbumView_Date         Int
+  UserActionAlbumView_AlbumId      Int?
+  UserActionAlbumView_ActionOrigin Int
+  Album                            Album? @relation(fields: [UserActionAlbumView_AlbumId], references: [Album_Id], onUpdate: NoAction)
+
+  @@index([UserActionAlbumView_AlbumId], map: "UserActionAlbumView_AlbumId")
+}
+
+model UserActionImport {
+  UserActionImport_Id           Int    @id @default(autoincrement())
+  UserActionImport_Date         Int
+  UserActionImport_SessionId    Int
+  UserActionImport_Destination  String
+  UserActionImport_ActionOrigin Int
+  UserActionImport_Manufacturer String
+  UserActionImport_Model        String
+  UserActionImport_TotalCount   Int
+}
+
+model UserActionLaunch {
+  UserActionLaunch_Id         Int @id @default(autoincrement())
+  UserActionLaunch_Date       Int
+  UserActionLaunch_EntryPoint Int
+}
+
+model UserActionPrint {
+  UserActionPrint_Id           Int   @id @default(autoincrement())
+  UserActionPrint_Date         Int
+  UserActionPrint_ItemId       Int?
+  UserActionPrint_ActionOrigin Int
+  Item                         Item? @relation(fields: [UserActionPrint_ItemId], references: [Item_Id], onUpdate: NoAction)
+
+  @@index([UserActionPrint_ItemId], map: "UserActionPrint_ItemId")
+}
+
+model UserActionSearch {
+  UserActionSearch_Id                  Int    @id @default(autoincrement())
+  UserActionSearch_Date                Int
+  UserActionSearch_Json                String
+  UserActionSearch_Textbox             String
+  UserActionSearch_ActionOrigin        Int
+  UserActionSearch_RequestOrigin       Int
+  UserActionSearch_NumberOfResults     Int
+  UserActionSearch_IndexingWasComplete Int
+}
+
+model UserActionShare {
+  UserActionShare_Id           Int    @id @default(autoincrement())
+  UserActionShare_Date         Int
+  UserActionShare_ItemId       Int?
+  UserActionShare_ActionOrigin Int
+  UserActionShare_Target       String
+  UserActionShare_Result       Int
+  Item                         Item?  @relation(fields: [UserActionShare_ItemId], references: [Item_Id], onUpdate: NoAction)
+
+  @@index([UserActionShare_ItemId], map: "UserActionShare_ItemId")
+}
+
+model UserActionSlideshow {
+  UserActionSlideshow_Id           Int    @id @default(autoincrement())
+  UserActionSlideshow_Date         Int
+  UserActionSlideshow_AlbumId      Int?
+  UserActionSlideshow_ItemId       Int?
+  UserActionSlideshow_ActionOrigin Int
+  Item                             Item?  @relation(fields: [UserActionSlideshow_ItemId], references: [Item_Id], onUpdate: NoAction)
+  Album                            Album? @relation(fields: [UserActionSlideshow_AlbumId], references: [Album_Id], onUpdate: NoAction)
+
+  @@index([UserActionSlideshow_ItemId], map: "UserActionSlideshow_ItemId")
+  @@index([UserActionSlideshow_AlbumId], map: "UserActionSlideshow_AlbumId")
+}
+
+model UserActionView {
+  UserActionView_Id           Int   @id @default(autoincrement())
+  UserActionView_Date         Int
+  UserActionView_ItemId       Int?
+  UserActionView_ActionOrigin Int
+  Item                        Item? @relation(fields: [UserActionView_ItemId], references: [Item_Id], onUpdate: NoAction)
+
+  @@index([UserActionView_ItemId], map: "UserActionView_ItemId")
+}
+
+model VideoFaceOccurrence {
+  VideoFaceOccurrence_Id         Int  @id @default(autoincrement())
+  VideoFaceOccurrence_FaceId     Int
+  VideoFaceOccurrence_BeginFrame Int
+  VideoFaceOccurrence_EndFrame   Int
+  VideoFaceOccurrence_FaceFrame  Int  @default(0)
+  Face                           Face @relation(fields: [VideoFaceOccurrence_FaceId], references: [Face_Id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([VideoFaceOccurrence_FaceId], map: "VideoFaceOccurrence_FaceId")
+}

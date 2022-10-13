@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="shortcut icon" type="image/ico" href="/src/assets/favicon.ico" />
+  <title>Solid App</title>
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    :root {
+      --t-border: #edf2f7;
+      --t-border-2: #cbd5e0;
+      --n-bg: white;
+      --n-bg-2: rgb(203, 213, 224);
+      --n-c: rgb(45, 55, 72);
+      --t-c: rgb(45, 55, 72);
+      --t-bg: white;
+      --alt-c: rgb(45, 55, 72);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --t-border: #1B202C;
+        --t-border-2: #262C3A;
+        --n-bg: #1B202C;
+        --n-bg-2: rgb(45, 55, 72);
+        --n-c: #EDF1F8;
+        --t-c: #cbd5e0;
+        --t-bg: #151720;
+        --alt-c: #0d8527;
+      }
+    }
+
+    body {
+      color: var(--n-c);
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    table,
+    td,
+    tr,
+    th {
+      background-color: var(--t-bg);
+      color: var(--t-c);
+      border: solid 1px var(--t-border);
+      border-collapse: collapse;
+    }
+
+    nav {
+      padding: .5em;
+      background: var(--n-bg);
+    }
+
+    nav div {
+      padding-top: .5em;
+    }
+
+    nav span {
+      height: 1em;
+      width: 1px;
+
+      padding: 0 0.1em;
+      padding-bottom: 0.2em;
+      border-left: 1px solid #8e9fb23d;
+    }
+
+    nav hr {
+      margin-bottom: 0;
+      border: none;
+      height: 1px;
+      background-color: #8e9fb23d;
+    }
+
+    nav button,
+    nav select {
+      border: none;
+      border-radius: .25em;
+      font-weight: 500;
+      background: var(--n-bg-2);
+      color: var(--alt-c);
+      box-shadow: #0002 0px -2px 3px 0px inset;
+      padding: .35em .75em;
+      margin-right: .5em;
+      outline: none;
+    }
+
+    input {
+      background: var(--n-bg-2);
+      border: solid 1px transparent;
+      border-radius: .25em;
+      margin-bottom: .25em;
+      font-weight: 500;
+      color: var(--n-c);
+      outline: none;
+      font-family: 'Courier New', Courier, monospace;
+      margin-right: .5em;
+      font-size: 1em;
+    }
+
+    input:active,
+    input:focus {
+      border-color: rgb(207, 102, 121);
+    }
+
+    td,
+    th {
+      padding: 4px 12px;
+    }
+
+    th {
+      /* text-transform: uppercase; */
+      color: var(--n-c);
+      /* font-weight: normal; */
+      background-color: var(--t-bg-2);
+      border: solid 1px var(--t-border-2);
+    }
+
+    table button {
+      border: none;
+      /* border-radius: .25em; */
+      background: transparent;
+      color: white;
+      font-size: 1em;
+      /* background: #fffb; */
+    }
+  </style>
+  <script src="/src/index.tsx" type="module"></script>
+</body>
+
+</html>
