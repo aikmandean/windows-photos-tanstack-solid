@@ -3,9 +3,7 @@ import { db } from "./helpers/-db.js";
 import { cacheTagNames } from "./helpers/cache-tagnames.js";
 
 const whereNotOpaque = {
-    Item: {
-        Item_FileName: { not: { endsWith: "heic" } }
-    }
+    Item_FileName: { not: { endsWith: "heic" } }
 };
 
 export const tags = fn(async props => {
@@ -18,7 +16,9 @@ export const tags = fn(async props => {
             } }
         },
         where: {
-            ...whereNotOpaque,
+            Item: { 
+                ...whereNotOpaque
+            },
             ItemTags_Confidence: { gte: .4 }
         }
     });
@@ -46,9 +46,11 @@ export const locations = fn(async props => {
                 } }
             } }
         },
-        where: whereNotOpaque
+        where: {
+            ...whereNotOpaque
+        }
     });
-
+    
     return items.map(it => {
         return {
             fileName: it.Item_FileName,
@@ -71,7 +73,9 @@ export const cameras = fn(async props => {
             } },
             Item_Width: true,
         },
-        where: whereNotOpaque
+        where: {
+            ...whereNotOpaque
+        }
     });
 
     return items.map(it => {
