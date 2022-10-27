@@ -18,7 +18,7 @@ from the project directory. It will start scanning.
 After it has finished scanning, you're ready to use the SQLite 
 database. Go to folder your `AppData` directory (a hidden folder 
 inside your user folder `C:/Users/<YOUR_USER>/AppData`). From there, 
-copy `./Local/Packages/Microsoft.Windows.Photos_8wekyb3d8bbwe/LocalState/MediaDb.v1.sqlite` to `./data/` in the project directory.
+copy `./Local/Packages/Microsoft.Windows.Photos_8wekyb3d8bbwe/LocalState/MediaDb.v1.sqlite` to `./data/` in the project directory. It may also be in `./Local/Packages/Microsoft.PhotosLegacy_8wekyb3d8bbwe/LocalState/MediaDb.v1.sqlite`
   
 You're now ready to use the app.
   
