@@ -35,7 +35,7 @@ npx http-server -p3030
   
 Open a final terminal from inside `./app`, then run,
 ```
-npx vite --port 3000
+npx vite --port 3000 --host 127.0.0.1
 ```
   
 Open your browser to `localhost:8080` to use the app, or 
