@@ -19,7 +19,7 @@ const Props = usePropsNav({ dataShape });
 export const TagModel = fn(() => {
 
 	const [data, setData] = createSignal([]);
-	fetchJson(apiRoot + "/large/tags")
+	fetchJson(apiRoot + "/v1/tags")
 		.then(setData);
 
 

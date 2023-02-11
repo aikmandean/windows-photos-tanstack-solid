@@ -28,19 +28,6 @@ In the project directory, run the following:
 node index.js
 ```
   
-Open another terminal from inside `./data/all`, then run,
-```
-npx http-server -p3030
-```
-  
-Open a final terminal from inside `./app`, then run,
-```
-npx vite --port 3000 --host 127.0.0.1
-```
-  
-Open your browser to `localhost:8080` to use the app, or 
-`localhost:8080/swagger` to see all the APIs.
-  
 ## Features
 ### Object recognition
 <img src="https://i.imgur.com/oMNMtM5.png" />
@@ -69,7 +56,6 @@ are truly displayed. Uses infinite scrolling similar to social apps.
   
 #### 4. Others
 + SolidJS - Frontend framework
-+ Fastify - Backend server
-+ Swagger - API discovery
-+ Http Server - Serves images
++ Fastify - Backend server, static server
++ Vite - Frontend builder
 + ST - Runtime type definitions

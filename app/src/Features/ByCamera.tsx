@@ -20,7 +20,7 @@ const Props = usePropsNav({ dataShape });
 export const CameraModel = fn(() => {
 
 	const [data, setData] = createSignal([]);
-	fetchJson(apiRoot + "/large/cameras")
+	fetchJson(apiRoot + "/v1/cameras")
 		.then(setData);
 
 

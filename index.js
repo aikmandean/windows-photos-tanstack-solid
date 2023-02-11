@@ -1,32 +1,44 @@
-import { discoverApiDefinitions, enableSwagger } from "@hwyblvd/swagger";
-import { addFileRoutes, createAllRoutes, createFastifyBase } from "@hwyblvd/server";
-import { createServingProxy } from "@hwyblvd/proxy";
+import { createAllRoutes, createFastifyBase } from "@hwyblvd/server";
 import { fn } from "@hwyblvd/st";
+import * as APIs from "./api/large.js";
 import { metaDir } from "@hwyblvd/cli";
+import { fastifyHttpProxy } from "@fastify/http-proxy";
+import { fastifyStatic } from "@fastify/static";
+import { findFreePorts } from "find-free-ports";
+import { resolve } from "path";
+import { exec } from "child_process";
+import OU from "openurl";
 
 const setup = fn(async props => {
-    await addFileRoutes(props)
-    createServingProxy({
-        ...props,
-        upstreamUrl: "http://127.0.0.1:3000/",
-        proxyEndpoint: "/"
+    
+    const [, portFrontend, portApi] = await findFreePorts(3, { startPort: 10_000 });
+
+    props.port = portApi;
+
+    for (const route in APIs) // @ts-ignore
+        if(typeof APIs[route] == "function") // @ts-ignore
+            props.routes.push({ url: `/api/v1/${route}`, handler: APIs[route] });
+    
+    exec(`cd app && npx -y vite --host ${props.host} --port ${portFrontend}`)
+
+    props.fastify.register(fastifyHttpProxy, {
+        upstream: `http://${props.host}:${portFrontend}/`,
+        prefix: "/",
+        httpMethods: ["GET"]
     });
-    createServingProxy({
-        ...props,
-        upstreamUrl: "http://127.0.0.1:3030/",
-        proxyEndpoint: "/i/"
+
+    props.fastify.register(fastifyStatic, { 
+        root: resolve(`${metaDir(import.meta)}/data/all`),
+        prefix: "/i/",
     });
-    enableSwagger(props)
-    discoverApiDefinitions(props);
+
     createFastifyBase(props);
     createAllRoutes(props);
-}, enableSwagger, discoverApiDefinitions, addFileRoutes, createAllRoutes, createFastifyBase);
 
-setup({
-    path: "api",
-    routes: [],
-    port: 8080,
-    host: "127.0.0.1",
-    baseUrl: "http://localhost:8080",
-    parent: metaDir(import.meta)
-});
+    await new Promise(r => setTimeout(r, 800))
+    OU.open(`http://${props.host}:${props.port}`);
+
+}, createAllRoutes, createFastifyBase);
+
+// @ts-ignore
+setup({});

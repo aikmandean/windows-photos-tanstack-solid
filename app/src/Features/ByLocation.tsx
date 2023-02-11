@@ -20,7 +20,7 @@ const Props = usePropsNav({ dataShape });
 export const LocationModel = fn(() => {
 
 	const [data, setData] = createSignal([]);
-	fetchJson(apiRoot + "/large/locations")
+	fetchJson(apiRoot + "/v1/locations")
 		.then(setData);
 
 

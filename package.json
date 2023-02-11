@@ -11,15 +11,21 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^18.13.0",
+    "@types/openurl": "^1.0.0",
     "prisma": "^4.4.0"
   },
   "dependencies": {
+    "@fastify/http-proxy": "^8.4.0",
+    "@fastify/static": "^6.9.0",
     "@hwyblvd/cli": "^1.0.0",
     "@hwyblvd/proxy": "^2.0.0",
     "@hwyblvd/server": "^2.0.0",
     "@hwyblvd/st": "^2.0.0",
     "@hwyblvd/swagger": "^2.0.0",
     "@prisma/client": "^4.4.0",
-    "app": "file:app"
+    "app": "file:app",
+    "find-free-ports": "^3.0.0",
+    "openurl": "^1.1.1"
   }
 }

@@ -1,5 +1,5 @@
 
-export const apiRoot = "http://localhost:8080/api"
+export const apiRoot = "/api"
 export const apiBasic = apiRoot + "/basic"
 
 export async function fetchJson(url = "", body = {}, options = {}) {
