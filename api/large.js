@@ -1,5 +1,6 @@
 import { fn } from "@hwyblvd/st"
 import { db } from "./helpers/-db.js";
+import { Chain, Skip } from "./helpers/-props.js";
 import { cacheTagNames } from "./helpers/cache-tagnames.js";
 
 const whereNotOpaque = {
@@ -87,3 +88,45 @@ export const cameras = fn(async props => {
         }
     });
 });
+
+const unit = (promise, property) => 
+    promise.then(array => array.map(item => item[property]));
+
+const CHOICE = {
+    Date: {
+        Season: ["Spring", "Summer", "Fall", "Winter"],
+        Year: () => unit(db.itemDateTaken.findMany({
+            select: { ItemDateTaken_Year: true },
+            distinct: ["ItemDateTaken_Year"]
+        }), "ItemDateTaken_Year"),
+        Month: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        "Time of Day": ["Dawn", "Morning", "Noon", "Afternoon", "Evening", "Night"]
+    },
+    Location: {
+        Country: () => unit(db.locationCountry.findMany({
+            select: { LocationCountry_Name: true },
+            distinct: ["LocationCountry_Name"]
+        }), "LocationCountry_Name"),
+        State: () => unit(db.locationRegion.findMany({
+            select: { LocationRegion_Name: true },
+            distinct: ["LocationRegion_Name"]
+        }), "LocationRegion_Name"),
+        City: () => unit(db.locationDistrict.findMany({
+            select: { LocationDistrict_Name: true },
+            distinct: ["LocationDistrict_Name"]
+        }), "LocationDistrict_Name"),
+    }
+};
+
+export const getIncrementValues = fn(async props => {
+    /** @ts-ignore @type {typeof Chain["chain"][number]} */
+    const recent = props.chain.pop(); // @ts-ignore
+    const options = CHOICE[recent.type][recent.choice];
+    
+    if(typeof options == "function")
+        return options();
+    else if(!options)
+        throw new Error(`Type '${recent.type}' does not contain '${recent.value}'.`);
+    else
+        return options;
+}, Chain);
